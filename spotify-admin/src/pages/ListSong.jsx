@@ -7,6 +7,7 @@ const ListSong = () => {
   const [data, setData] = useState([]);
   const [editingSong, setEditingSong] = useState(null);
   const [editForm, setEditForm] = useState({ name: '', album: '' });
+  const [albumData, setAlbumData] = useState([]);
 
   // Fetch all songs from the backend
   const fetchSongs = async () => {
@@ -20,17 +21,31 @@ const ListSong = () => {
     }
   };
 
+  // Fetch albums from the backend
+  const fetchAlbums = async () => {
+    try {
+      const response = await axios.get(`${url}/api/album/list`);
+      if (response.data.success) {
+        setAlbumData(response.data.albums);
+      } else {
+        toast.error('Unable to load albums');
+      }
+    } catch (error) {
+      toast.error('Error occurred while fetching albums');
+    }
+  };
+
   // Remove a song by ID
   const removeSong = async (id) => {
     try {
       const response = await axios.post(
         `${url}/api/song/remove`,
         { id },
-        { headers: { 'Content-Type': 'application/json' } } // Added header
+        { headers: { 'Content-Type': 'application/json' } }
       );
       if (response.data.success) {
         toast.success(response.data.message);
-        await fetchSongs(); // Refresh song list
+        await fetchSongs();
       }
     } catch (error) {
       toast.error('Error occurred while removing the song');
@@ -60,16 +75,17 @@ const ListSong = () => {
       if (response.data.success) {
         toast.success(response.data.message);
         setEditingSong(null);
-        await fetchSongs(); // Refresh song list
+        await fetchSongs();
       }
     } catch (error) {
       toast.error('Error occurred while updating the song');
     }
   };
 
-  // Fetch songs on component mount
+  // Fetch data on component mount
   useEffect(() => {
     fetchSongs();
+    fetchAlbums();
   }, []);
 
   return (
@@ -99,13 +115,19 @@ const ListSong = () => {
                   onChange={handleEditChange}
                   className="text-black border border-gray-300 rounded-md px-2"
                 />
-                <input
-                  type="text"
+                <select
                   name="album"
                   value={editForm.album}
                   onChange={handleEditChange}
                   className="text-black border border-gray-300 rounded-md px-2"
-                />
+                >
+                  <option value="none">None</option>
+                  {albumData.map((album, idx) => (
+                    <option key={idx} value={album.name}>
+                      {album.name}
+                    </option>
+                  ))}
+                </select>
               </>
             ) : (
               <>

@@ -63,4 +63,14 @@ const addAlbum = async (req,res) => {
 
  }
 
- export{addAlbum,listAlbum,removeAlbum}
+ const updateAlbum = async (req, res) => {
+    try {
+      const { id, name, desc, bgColour } = req.body;
+      await albumModel.findByIdAndUpdate(id, { name, desc, bgColour });
+      res.json({ success: true, message: 'Album updated successfully' });
+    } catch (error) {
+      res.json({ success: false, message: 'Failed to update album' });
+    }
+  };
+
+ export{addAlbum,listAlbum,removeAlbum, updateAlbum}
