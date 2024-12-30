@@ -6,14 +6,14 @@ import { toast } from 'react-toastify';
 
 const AddAlbum = () => {
 
-    const [image, setImage] = useState(false);
+    const [image, setImage] = useState(null);
     const [colour, setColour] = useState("#ffffff");
     const [name, setName] = useState("");
     const [desc, setDesc] = useState("");
     const [loading, setLoading] = useState(false);
 
     const onSubmitHandler = async(e) =>{
-      e.preventDedault();
+      e.preventDefault();
       setLoading(true);
       try {
         const formData = new FormData();
@@ -27,7 +27,7 @@ const AddAlbum = () => {
         if(response.data.success){
           toast.success("Album Added");
           setDesc("");
-          setImage(false);
+          setImage(null);
           setName("");
         }
         else{
