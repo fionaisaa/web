@@ -7,7 +7,7 @@ import { Routes, Route, useLocation } from 'react-router-dom'; // Don't import B
 import Login from './components/Login';
 
 const App = () => {
-  const { audioRef, track } = useContext(PlayerContext);
+  const { audioRef, track , songsData} = useContext(PlayerContext);
   const location = useLocation();
 
   const hiddenRoutes = ["/login"];
@@ -19,14 +19,21 @@ const App = () => {
   return (
     <>
     <div className="h-screen bg-black">
-      <div className="h-[90%] flex">
+      {
+        songsData.length !==0
+        ? <>
+        <div className="h-[90%] flex">
       {!shouldHideSidebar && <Sidebar />}
 
         <Display />
       </div>
-      {!shouldHideComponents && <Player />} {/* Player will only render if not on hidden routes */}
+      {!shouldHideComponents && <Player />}
+        </>
+        : null
+      }
+       {/* Player will only render if not on hidden routes */}
       {!shouldHideComponents && (
-        <audio ref={audioRef} src={track.file} preload="auto"></audio>
+        <audio ref={audioRef} src={track?track.file:""} preload="auto"></audio>
       )}
     
     </div>
